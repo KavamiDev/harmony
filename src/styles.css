@@ -1,22 +1,47 @@
 @import "tailwindcss";
 
+/* Warm, soft, a little childlike: cream paper, sage greens, pastel dots, serif titles. */
 @theme {
-  --color-bg: #faf7f2;
+  --color-bg: #f7f5ec;
   --color-surface: #ffffff;
-  --color-ink: #1f2a37;
-  --color-muted: #5b6573;
-  --color-line: #e7e1d7;
-  --color-brand: #2f6f68;
-  --color-brand-strong: #245852;
-  --color-side-a: #c4623f; /* parent A */
-  --color-side-a-soft: #f7e3da;
-  --color-side-b: #2f6b94; /* parent B */
-  --color-side-b-soft: #dcebf5;
+  --color-ink: #24312a;
+  --color-muted: #5d6a61;
+  --color-line: #e3e6d5;
 
-  --font-sans: "Figtree", system-ui, sans-serif;
+  --color-brand: #4e7d5b;
+  --color-brand-strong: #3d6748;
+  --color-leaf: #8dbd7c;
+  --color-meadow: #c8e1b0;
+  --color-meadow-soft: #e3efd3;
+
+  --color-sun: #f5c64a;
+  --color-peach: #f8dccf;
+  --color-butter: #fbf0c4;
+  --color-sky: #d7ebf1;
+  --color-mint: #e1f0da;
+
+  --color-side-a: #c9724d; /* parent A: terracotta house */
+  --color-side-a-soft: #f8dccf;
+  --color-side-b: #4a87a8; /* parent B: blue house */
+  --color-side-b-soft: #d7ebf1;
+
+  --font-sans: "Nunito", system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
 }
 
 @layer base {
-  body { background: var(--color-bg); color: var(--color-ink); font-family: var(--font-sans); }
-  :focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--color-bg); color: var(--color-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  :focus-visible { outline: 3px solid var(--color-brand); outline-offset: 3px; border-radius: 8px; }
+}
+
+@layer components {
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 3rem; padding: 0 1.5rem; border-radius: 999px; font-weight: 700; font-size: 0.95rem; transition: background-color .15s, transform .15s; }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--color-brand); color: #fff; box-shadow: 0 6px 16px -8px rgb(61 103 72 / .7); }
+  .btn-primary:hover { background: var(--color-brand-strong); }
+  .btn-soft { background: #fff; color: var(--color-ink); box-shadow: 0 4px 14px -8px rgb(36 49 42 / .35); }
+  .btn-soft:hover { background: var(--color-meadow-soft); }
+  .eyebrow { font-size: .75rem; letter-spacing: .22em; font-weight: 700; color: var(--color-brand); text-transform: uppercase; }
+  .card { background: #fff; border-radius: 1.5rem; box-shadow: 0 10px 30px -18px rgb(36 49 42 / .35); }
 }
