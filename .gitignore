@@ -5,3 +5,4 @@ dist/
 .wrangler/
 supabase/.temp/
 *.local
+.dev.vars

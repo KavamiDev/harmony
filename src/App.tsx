@@ -1,10 +1,12 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { SessionProvider } from "./lib/session";
 import Calendar from "./pages/Calendar";
+import Documents from "./pages/Documents";
 import Home from "./pages/Home";
 import Join from "./pages/Join";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
+import Mails from "./pages/Mails";
 import Messages from "./pages/Messages";
 import Preview from "./pages/Preview";
 import Welcome from "./pages/Welcome";
@@ -18,6 +20,8 @@ const router = createBrowserRouter([
   { path: "/app", element: <Home /> },
   { path: "/app/calendrier", element: <Calendar /> },
   { path: "/app/messages", element: <Messages /> },
+  { path: "/app/mails", element: <Mails /> },
+  { path: "/app/documents", element: <Documents /> },
 ]);
 
 export default function App() {

@@ -34,4 +34,18 @@ bun run test:db       # pgTAP: RLS (family isolation, append-only messages)
 bun run check         # TypeScript
 ```
 
+### Child's mail (Cloudflare Email Worker)
+
+`workers/mail-in/` receives every mail sent to `<child>.<xxxx>@<domain>`, stores it in
+`mails` and files the accepted attachments in Documents. Logic in `handle.ts` (tested),
+Supabase access in `index.ts` with the service key (Worker secret only).
+
+Local test: put `SUPABASE_URL` and `SUPABASE_SECRET_KEY` (from `supabase status`) in
+`workers/mail-in/.dev.vars` (gitignored), then:
+
+```bash
+bun run mail:dev
+curl -X POST "http://127.0.0.1:8787/cdn-cgi/handler/email?from=school@example.org&to=lea.xxxx@harmony.fr" --data-binary @mail.eml
+```
+
 Spec: `docs/SPEC.md` · Later: `docs/LATER.md`

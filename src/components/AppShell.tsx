@@ -11,7 +11,9 @@ import { Loading } from "./ui";
 const NAV = [
   { to: "/app", label: "Accueil", icon: "home" },
   { to: "/app/calendrier", label: "Calendrier", icon: "calendar" },
+  { to: "/app/mails", label: "Mails", icon: "mail" },
   { to: "/app/messages", label: "Messages", icon: "chat" },
+  { to: "/app/documents", label: "Documents", icon: "folder" },
 ] as const;
 
 /** Renders the page only for a signed-in parent with a family. */
@@ -22,7 +24,7 @@ export default function AppShell({ children }: { children: (data: FamilyData) =>
   if (!data) return <Navigate to="/bienvenue" replace />;
 
   const link = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition ${isActive ? "bg-white text-brand shadow-sm" : "text-muted hover:text-ink"}`;
+    `flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-bold transition ${isActive ? "bg-white text-brand shadow-sm" : "text-muted hover:text-ink"}`;
 
   return (
     <div className="min-h-dvh pb-28 md:pb-12">
@@ -42,11 +44,11 @@ export default function AppShell({ children }: { children: (data: FamilyData) =>
       {children(data)}
 
       <nav aria-label="Application" className="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-white/95 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur md:hidden">
-        <ul className="mx-auto grid max-w-md grid-cols-3">
+        <ul className="mx-auto grid max-w-lg grid-cols-5">
           {NAV.map((n) => (
             <li key={n.to}>
               <NavLink to={n.to} end className={({ isActive }) => `flex flex-col items-center gap-0.5 rounded-2xl py-1.5 text-xs font-bold ${isActive ? "text-brand" : "text-muted"}`}>
-                {({ isActive }) => (<><span className={`grid h-8 w-14 place-items-center rounded-full ${isActive ? "bg-mint" : ""}`}><Icon name={n.icon} className="size-5" /></span>{n.label}</>)}
+                {({ isActive }) => (<><span className={`grid h-8 w-12 place-items-center rounded-full ${isActive ? "bg-mint" : ""}`}><Icon name={n.icon} className="size-5" /></span>{n.label}</>)}
               </NavLink>
             </li>
           ))}

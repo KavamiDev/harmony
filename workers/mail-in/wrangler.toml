@@ -1,0 +1,8 @@
+name = "harmony-mail-in"
+main = "index.ts"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+MAIL_DOMAIN = "harmony.fr"
+# SUPABASE_URL and SUPABASE_SECRET_KEY: `wrangler secret put` in production, .dev.vars locally.

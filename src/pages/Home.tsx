@@ -41,7 +41,10 @@ function HomeContent({ data }: { data: FamilyData }) {
         <TodayCard plan={plan} child={child.first_name} names={names} handoverTime={plan.handover_time} />
 
         <section aria-labelledby="mails" className="card p-5 sm:p-6">
-          <h2 id="mails" className="flex items-center gap-2 text-lg font-bold"><span className="grid size-9 place-items-center rounded-full bg-peach text-side-a"><Icon name="mail" className="size-5" /></span>Mails de {child.first_name}</h2>
+          <div className="flex items-center justify-between gap-2">
+            <h2 id="mails" className="flex items-center gap-2 text-lg font-bold"><span className="grid size-9 place-items-center rounded-full bg-peach text-side-a"><Icon name="mail" className="size-5" /></span>Mails de {child.first_name}</h2>
+            <Link to="/app/mails" className="text-sm font-bold text-brand hover:underline">Tout voir</Link>
+          </div>
           <AddressLine address={address} />
           {mails.length === 0 ? (
             <p className="mt-4 rounded-2xl bg-bg px-4 py-3 text-sm text-muted">Aucun mail pour l'instant. Donnez cette adresse à l'école, au médecin, au club : leurs mails arriveront ici, chez vous deux.</p>
