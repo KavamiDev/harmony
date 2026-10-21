@@ -122,8 +122,13 @@ export function Meadow({ className = "" }: { className?: string }) {
   );
 }
 
-type IconName = "mail" | "calendar" | "chat" | "folder" | "shield" | "clock" | "family" | "check" | "arrow" | "school" | "doctor" | "ball";
+type IconName = "home" | "plus" | "trash" | "send" | "settings" | "mail" | "calendar" | "chat" | "folder" | "shield" | "clock" | "family" | "check" | "arrow" | "school" | "doctor" | "ball";
 const PATHS: Record<IconName, string> = {
+  home: "M4 11l8-7 8 7 M6 9.5V20h12V9.5 M10 20v-5h4v5",
+  plus: "M12 5v14 M5 12h14",
+  trash: "M5 7h14 M9 7V4h6v3 M7 7l1 13h8l1-13",
+  send: "M4 12l16-8-6 16-2-7z",
+  settings: "M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z M4 12h2 M18 12h2 M12 4v2 M12 18v2 M6.3 6.3l1.4 1.4 M16.3 16.3l1.4 1.4 M6.3 17.7l1.4-1.4 M16.3 7.7l1.4-1.4",
   mail: "M4 6h16v12H4z M4 7l8 6 8-6",
   calendar: "M4 6h16v14H4z M4 10h16 M8 3v5 M16 3v5 M8 14h3",
   chat: "M4 5h16v10H9l-5 4z M8 9h8 M8 12h5",
