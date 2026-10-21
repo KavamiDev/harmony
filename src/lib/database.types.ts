@@ -41,6 +41,78 @@ export type Database = {
           },
         ]
       }
+      custody_changes: {
+        Row: {
+          anchor: string | null
+          child_id: string
+          created_at: string
+          cycle: string | null
+          decided_at: string | null
+          decided_by: string | null
+          end_date: string | null
+          family_id: string
+          handover_time: string | null
+          id: string
+          kind: string
+          note: string | null
+          proposed_by: string | null
+          side: string | null
+          start_date: string | null
+          status: string
+        }
+        Insert: {
+          anchor?: string | null
+          child_id: string
+          created_at?: string
+          cycle?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          end_date?: string | null
+          family_id: string
+          handover_time?: string | null
+          id?: string
+          kind: string
+          note?: string | null
+          proposed_by?: string | null
+          side?: string | null
+          start_date?: string | null
+          status?: string
+        }
+        Update: {
+          anchor?: string | null
+          child_id?: string
+          created_at?: string
+          cycle?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          end_date?: string | null
+          family_id?: string
+          handover_time?: string | null
+          id?: string
+          kind?: string
+          note?: string | null
+          proposed_by?: string | null
+          side?: string | null
+          start_date?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custody_changes_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custody_changes_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       custody_plans: {
         Row: {
           anchor: string
@@ -392,11 +464,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _apply_change: {
+        Args: { c: Database["public"]["Tables"]["custody_changes"]["Row"] }
+        Returns: undefined
+      }
+      _propose: {
+        Args: { c: Database["public"]["Tables"]["custody_changes"]["Row"] }
+        Returns: string
+      }
       accept_invite: {
         Args: { display_name: string; token: string }
         Returns: string
       }
       can_write: { Args: { f: string }; Returns: boolean }
+      cancel_change: { Args: { change: string }; Returns: undefined }
       create_family: {
         Args: {
           anchor: string
@@ -418,6 +499,30 @@ export type Database = {
       }
       is_member: { Args: { f: string }; Returns: boolean }
       path_family: { Args: { p: string }; Returns: string }
+      propose_cycle: {
+        Args: {
+          anchor: string
+          child: string
+          cycle: string
+          handover_time: string
+          note?: string
+        }
+        Returns: string
+      }
+      propose_override: {
+        Args: {
+          child: string
+          end_date: string
+          note?: string
+          side: string
+          start_date: string
+        }
+        Returns: string
+      }
+      respond_change: {
+        Args: { accept: boolean; change: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

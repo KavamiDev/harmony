@@ -2,6 +2,8 @@
 
 export type Side = "A" | "B";
 export interface CustodyPlan { cycle: string; anchor: string }
+/** An accepted one-off change: the child is with `side` from start_date to end_date (inclusive). */
+export interface Override { start_date: string; end_date: string; side: string; decided_at: string | null }
 
 export const PRESETS = {
   alternate: { label: "Une semaine sur deux", cycle: "AAAAAAABBBBBBB" },
@@ -16,21 +18,25 @@ const fromDay = (n: number) => new Date(n * DAY).toISOString().slice(0, 10);
 
 export const isValidCycle = (cycle: string) => /^[AB]+$/.test(cycle) && (cycle.length === 7 || cycle.length === 14);
 
-export function custodyOn(plan: CustodyPlan, date: string): Side {
+export function custodyOn(plan: CustodyPlan, date: string, overrides: Override[] = []): Side {
+  let winner: Override | undefined;
+  for (const o of overrides)
+    if (o.start_date <= date && date <= o.end_date && (!winner || (o.decided_at ?? "") > (winner.decided_at ?? ""))) winner = o;
+  if (winner) return winner.side as Side;
   const n = plan.cycle.length;
   const i = (((toDay(date) - toDay(plan.anchor)) % n) + n) % n;
   return plan.cycle[i] as Side;
 }
 
-export function custodyRange(plan: CustodyPlan, from: string, to: string) {
+export function custodyRange(plan: CustodyPlan, from: string, to: string, overrides: Override[] = []) {
   const days: { date: string; side: Side }[] = [];
-  for (let d = toDay(from); d <= toDay(to); d++) days.push({ date: fromDay(d), side: custodyOn(plan, fromDay(d)) });
+  for (let d = toDay(from); d <= toDay(to); d++) days.push({ date: fromDay(d), side: custodyOn(plan, fromDay(d), overrides) });
   return days;
 }
 
 /** Days in (from, to] where the child moves to the other home. */
-export function handovers(plan: CustodyPlan, from: string, to: string) {
-  const days = custodyRange(plan, from, to);
+export function handovers(plan: CustodyPlan, from: string, to: string, overrides: Override[] = []) {
+  const days = custodyRange(plan, from, to, overrides);
   return days.slice(1).filter((d, i) => d.side !== days[i]!.side).map((d) => ({ date: d.date, to: d.side }));
 }
 
@@ -38,3 +44,6 @@ export function mondayOf(date: string) {
   const d = toDay(date);
   return fromDay(d - ((new Date(d * DAY).getUTCDay() + 6) % 7));
 }
+
+/** Flips one day of a custom cycle (A ↔ B). */
+export const toggleDay = (cycle: string, i: number) => cycle.slice(0, i) + (cycle[i] === "A" ? "B" : "A") + cycle.slice(i + 1);

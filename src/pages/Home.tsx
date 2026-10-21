@@ -2,10 +2,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import AppShell, { sideNames } from "../components/AppShell";
+import ChangeRequests from "../components/ChangeRequests";
 import { Icon, Meadow } from "../components/art";
 import TodayCard, { SIDE_STYLE } from "../components/TodayCard";
 import { MAIL_DOMAIN } from "../config";
 import type { Side } from "../lib/custody";
+import { useCustodyChanges } from "../lib/changes";
 import { fmtWhen } from "../lib/dates";
 import { hashToken, newInviteToken } from "../lib/invite";
 import type { FamilyData } from "../lib/session";
@@ -20,6 +22,7 @@ function HomeContent({ data }: { data: FamilyData }) {
   const [events, setEvents] = useState<Tables<"events">[]>([]);
   const [messages, setMessages] = useState<Tables<"messages">[]>([]);
   const { members, child, plan, family } = data;
+  const changes = useCustodyChanges(data);
 
   useEffect(() => {
     supabase.from("mails").select("*").eq("family_id", family.id).order("received_at", { ascending: false }).limit(3)
@@ -38,7 +41,9 @@ function HomeContent({ data }: { data: FamilyData }) {
       <main className="mx-auto grid max-w-5xl gap-5 px-4 sm:px-6 md:grid-cols-[1.3fr_1fr]">
         {members.length < 2 && <InviteCard familyId={family.id} child={child.first_name} />}
 
-        <TodayCard plan={plan} child={child.first_name} names={names} handoverTime={plan.handover_time} />
+        <ChangeRequests data={data} pending={changes.pending} onChange={changes.reload} />
+
+        <TodayCard plan={plan} child={child.first_name} names={names} handoverTime={plan.handover_time} overrides={changes.overrides} />
 
         <section aria-labelledby="mails" className="card p-5 sm:p-6">
           <div className="flex items-center justify-between gap-2">

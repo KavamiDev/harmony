@@ -18,6 +18,7 @@ tout ce qui concerne leur enfant.*
 |---|---|
 | Mail de l'enfant | Une adresse par enfant. Chaque mail reçu est visible par les deux parents. Les pièces jointes autorisées vont dans Documents. |
 | Calendrier | Un cycle de garde (préréglages ou cycle libre sur 14 jours) + des rendez-vous. Vue mois et « qui a l'enfant aujourd'hui ». |
+| Changements de garde | Un parent propose : des jours ponctuels (« Léa chez moi du 24 au 26 ») ou un nouveau rythme (préréglage ou personnalisé jour par jour). **L'autre parent accepte ou refuse.** Rien ne change sans son accord. Seul dans la famille, le changement s'applique tout de suite. |
 | Messagerie | Fil unique entre les deux parents. Horodaté. **Aucune modification ni suppression**, même par l'auteur. |
 | Documents | Catégories : école, administratif, activités, autre. **Pas de documents médicaux** en V1 (voir 7). |
 | Invitation | Un lien à partager (WhatsApp, SMS, mail). L'autre parent saisit son email, reçoit un code à 6 chiffres, il est dedans. Pas de mot de passe. |
@@ -38,6 +39,7 @@ Hors V1 : voir `docs/LATER.md`.
 
 ## 4. Règles métier (fonctions pures dans `src/lib/`, testées)
 
+- **Changements validés** : un changement ponctuel accepté (`custody_changes`, `kind = override`) passe avant le cycle sur ses jours. S'ils se chevauchent, le plus récemment accepté gagne. Un rythme accepté (`kind = cycle`) remplace `custody_plans`. Personne ne valide sa propre demande, une décision est définitive, l'auteur peut annuler tant que c'est en attente. Au plus 3 mois par changement ponctuel.
 - **Cycle de garde** : une chaîne de `A`/`B` répétée à partir d'un lundi d'ancrage.
   Préréglages :
 
@@ -97,7 +99,8 @@ Paiement
 | `members` | `family_id`, `user_id`, `display_name`, `side` (`A`/`B`) | membres : lecture ; ajout via `create_family` / `accept_invite` uniquement |
 | `invites` | `token_hash`, `family_id`, `created_by`, `expires_at`, `used_at` | créateur : lecture et ajout |
 | `children` | `id`, `family_id`, `first_name`, `mail_local` (unique) | membres : lecture et ajout |
-| `custody_plans` | `family_id`, `child_id`, `cycle`, `anchor`, `handover_time` | membres : tout |
+| `custody_plans` | `family_id`, `child_id`, `cycle`, `anchor`, `handover_time` | membres : lecture ; modifié seulement par un changement accepté |
+| `custody_changes` | `kind` (`override`/`cycle`), dates et côté ou cycle, `note`, `status`, `proposed_by`, `decided_by` | membres : lecture ; écriture via `propose_override`, `propose_cycle`, `respond_change`, `cancel_change` |
 | `events` | `family_id`, `child_id`, `title`, `starts_at`, `ends_at`, `all_day`, `place`, `notes` | membres : tout |
 | `messages` | `family_id`, `author_id`, `body`, `created_at` | membres : lecture ; ajout par soi-même ; **ni modification ni suppression** |
 | `mails` | `family_id`, `child_id`, `from_addr`, `subject`, `text`, `received_at`, `message_id` (unique) | membres : lecture ; écriture par le Worker uniquement |

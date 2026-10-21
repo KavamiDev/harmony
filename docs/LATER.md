@@ -3,7 +3,7 @@
 - Documents médicaux (après vérification HDS / choix d'un hébergeur certifié).
 - Dépenses partagées et remboursements entre parents.
 - Abonnement au calendrier depuis Google / Apple (flux iCal avec jeton secret).
-- Vacances scolaires et exceptions au cycle de garde (échange de jours, demandes).
+- Vacances scolaires pré-remplies (zones A/B/C) proposées comme changements.
 - Plusieurs enfants avec des cycles différents, familles recomposées.
 - Liste blanche d'expéditeurs pour l'adresse de l'enfant, filtre anti-spam.
 - Export PDF des messages pour un avocat ou un médiateur.

@@ -70,3 +70,37 @@ describe("mondayOf", () => {
     ["2026-10-26", "2026-10-26"],
   ])("%s → %s", (d, m) => expect(mondayOf(d)).toBe(m));
 });
+
+describe("overrides (accepted day changes)", () => {
+  const alt = plan(PRESETS.alternate.cycle); // week of 19 Oct: A, week of 26 Oct: B
+  const ov = (start_date: string, end_date: string, side: "A" | "B", decided_at = "2026-10-20T10:00:00Z") => ({ start_date, end_date, side, decided_at });
+
+  it("wins over the cycle on the covered days only", () => {
+    const o = [ov("2026-10-24", "2026-10-25", "B")];
+    expect(custodyOn(alt, "2026-10-23", o)).toBe("A");
+    expect(custodyOn(alt, "2026-10-24", o)).toBe("B");
+    expect(custodyOn(alt, "2026-10-25", o)).toBe("B");
+    expect(custodyOn(alt, "2026-10-26", o)).toBe("B"); // back to the cycle (B week anyway)
+    expect(custodyOn(alt, "2026-10-27", [ov("2026-10-27", "2026-10-27", "A")])).toBe("A");
+  });
+
+  it("uses the most recently decided change when two overlap", () => {
+    const o = [ov("2026-10-22", "2026-10-25", "B", "2026-10-20T10:00:00Z"), ov("2026-10-24", "2026-10-24", "A", "2026-10-21T10:00:00Z")];
+    expect(custodyOn(alt, "2026-10-23", o)).toBe("B");
+    expect(custodyOn(alt, "2026-10-24", o)).toBe("A");
+  });
+
+  it("is applied by custodyRange and handovers", () => {
+    const o = [ov("2026-10-24", "2026-10-25", "B")];
+    expect(custodyRange(alt, "2026-10-22", "2026-10-26", o).map((d) => d.side).join("")).toBe("AABBB");
+    expect(handovers(alt, "2026-10-19", "2026-10-27", o)).toEqual([{ date: "2026-10-24", to: "B" }]);
+  });
+});
+
+describe("customCycle helpers", () => {
+  it("toggles one day of a cycle", async () => {
+    const { toggleDay } = await import("./custody");
+    expect(toggleDay("AAAAAAABBBBBBB", 0)).toBe("BAAAAAABBBBBBB");
+    expect(toggleDay("AAAAAAABBBBBBB", 13)).toBe("AAAAAAABBBBBBA");
+  });
+});

@@ -1,5 +1,5 @@
 // "Today, Léa is at Camille's" + the next two weeks, from the custody cycle.
-import { custodyOn, custodyRange, handovers, mondayOf, type CustodyPlan, type Side } from "../lib/custody";
+import { custodyOn, custodyRange, handovers, mondayOf, type CustodyPlan, type Override, type Side } from "../lib/custody";
 import { addDays, fmtDay, fmtHandover, todayLocal } from "../lib/dates";
 
 export const SIDE_STYLE: Record<Side, { dot: string; soft: string; text: string }> = {
@@ -7,11 +7,11 @@ export const SIDE_STYLE: Record<Side, { dot: string; soft: string; text: string 
   B: { dot: "bg-side-b", soft: "bg-side-b-soft", text: "text-side-b" },
 };
 
-export default function TodayCard({ plan, child, names, handoverTime }: { plan: CustodyPlan; child: string; names: Record<Side, string>; handoverTime: string }) {
+export default function TodayCard({ plan, child, names, handoverTime, overrides = [] }: { plan: CustodyPlan; child: string; names: Record<Side, string>; handoverTime: string; overrides?: Override[] }) {
   const today = todayLocal();
-  const side = custodyOn(plan, today);
-  const week = custodyRange(plan, mondayOf(today), addDays(mondayOf(today), 13));
-  const next = handovers(plan, today, addDays(today, 28))[0];
+  const side = custodyOn(plan, today, overrides);
+  const week = custodyRange(plan, mondayOf(today), addDays(mondayOf(today), 13), overrides);
+  const next = handovers(plan, today, addDays(today, 28), overrides)[0];
 
   return (
     <section aria-labelledby="today" className="card overflow-hidden md:col-span-2">
