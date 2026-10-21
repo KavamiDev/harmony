@@ -1,6 +1,7 @@
 // Session + the parent's family, loaded once and shared by every page.
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
+import { canWrite, planStatus, type PlanStatus } from "./subscription";
 import { supabase, type Tables } from "./supabase";
 
 export interface FamilyData {
@@ -9,6 +10,8 @@ export interface FamilyData {
   members: Tables<"members">[];
   child: Tables<"children">;
   plan: Tables<"custody_plans">;
+  status: PlanStatus;
+  readOnly: boolean; // trial over and not paid: the server refuses writes too
 }
 
 interface Ctx {
@@ -30,7 +33,8 @@ async function loadFamily(userId: string): Promise<FamilyData | null> {
     supabase.from("custody_plans").select("*").eq("family_id", me.family_id).limit(1).single(),
   ]);
   if (!family.data || !child.data || !plan.data) return null;
-  return { family: family.data, me, members: members.data ?? [me], child: child.data, plan: plan.data };
+  const status = planStatus(family.data, Date.now());
+  return { family: family.data, me, members: members.data ?? [me], child: child.data, plan: plan.data, status, readOnly: !canWrite(status) };
 }
 
 export function SessionProvider({ children }: { children: ReactNode }) {

@@ -12,5 +12,5 @@
     "isolatedModules": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "workers", "vite.config.ts"]
+  "include": ["src", "workers", "vite.config.ts", "supabase/functions/**/logic*.ts"]
 }

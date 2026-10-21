@@ -89,6 +89,9 @@ function Thread({ data }: { data: FamilyData }) {
           <li ref={end} aria-hidden="true" className="h-0" />
         </ol>
 
+        {data.readOnly ? (
+          <p className="border-t border-line bg-bg p-4 text-center text-sm text-muted">Lecture seule : abonnez-vous depuis les réglages pour écrire à nouveau.</p>
+        ) : (
         <form onSubmit={send} className="border-t border-line bg-white p-3 sm:p-4">
           {error && <p role="alert" className="mb-2 text-sm font-semibold text-side-a">{error}</p>}
           <div className="flex items-end gap-2">
@@ -103,6 +106,7 @@ function Thread({ data }: { data: FamilyData }) {
           </div>
           <p className="mt-2 text-center text-xs text-muted">Entrée pour envoyer · Maj + Entrée pour aller à la ligne</p>
         </form>
+        )}
       </section>
     </main>
   );

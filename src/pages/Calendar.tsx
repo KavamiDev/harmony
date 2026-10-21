@@ -117,11 +117,11 @@ function CalendarContent({ data }: { data: FamilyData }) {
                   {e.place && <span className="block text-sm text-muted">{e.place}</span>}
                   {e.notes && <span className="block whitespace-pre-line text-sm text-muted">{e.notes}</span>}
                 </span>
-                <button onClick={async () => { await supabase.from("events").delete().eq("id", e.id); load(); }} aria-label={`Supprimer ${e.title}`} className="grid size-9 shrink-0 place-items-center rounded-full text-muted hover:bg-white hover:text-side-a"><Icon name="trash" className="size-5" /></button>
+                {!data.readOnly && <button onClick={async () => { await supabase.from("events").delete().eq("id", e.id); load(); }} aria-label={`Supprimer ${e.title}`} className="grid size-9 shrink-0 place-items-center rounded-full text-muted hover:bg-white hover:text-side-a"><Icon name="trash" className="size-5" /></button>}
               </li>
             ))}
           </ul>
-          {adding
+          {data.readOnly ? null : adding
             ? <EventForm day={selected} data={data} onDone={() => { setAdding(false); load(); }} />
             : <button onClick={() => setAdding(true)} className="btn btn-soft mt-4 w-full"><Icon name="plus" className="size-5" />Ajouter un rendez-vous</button>}
         </section>
@@ -215,7 +215,7 @@ function CycleSettings({ data }: { data: FamilyData }) {
     <section aria-labelledby="cycle" className="card p-5 sm:p-6">
       <div className="flex items-center justify-between gap-2">
         <h2 id="cycle" className="flex items-center gap-2 text-lg font-bold"><span className="grid size-9 place-items-center rounded-full bg-sky text-side-b"><Icon name="settings" className="size-5" /></span>Rythme de garde</h2>
-        {!open && <button onClick={() => setOpen(true)} className="text-sm font-bold text-brand hover:underline">Modifier</button>}
+        {!open && !data.readOnly && <button onClick={() => setOpen(true)} className="text-sm font-bold text-brand hover:underline">Modifier</button>}
       </div>
       <p className="mt-2 text-muted">{PRESETS[current].label}, changement à {fmtHandover(plan.handover_time)}.</p>
       {note && <p role="status" className="mt-2 text-sm font-semibold text-brand">{note}</p>}

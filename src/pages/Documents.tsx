@@ -43,7 +43,9 @@ function Library({ data }: { data: FamilyData }) {
 
   return (
     <main className="mx-auto grid max-w-5xl gap-5 px-4 sm:px-6 lg:grid-cols-[1fr_1.6fr]">
-      <UploadCard data={data} onDone={load} />
+      {data.readOnly
+        ? <section className="card h-fit p-5 text-sm text-muted sm:p-6">Lecture seule : vos documents restent consultables. Abonnez-vous depuis les réglages pour en ajouter.</section>
+        : <UploadCard data={data} onDone={load} />}
 
       <section aria-labelledby="library" className="card p-5 sm:p-6">
         <h1 id="library" className="font-display text-2xl font-medium">Documents de {child.first_name}</h1>
@@ -72,10 +74,10 @@ function Library({ data }: { data: FamilyData }) {
                   </span>
                 </button>
                 <label className="sr-only" htmlFor={`cat-${d.id}`}>Catégorie de {d.name}</label>
-                <select id={`cat-${d.id}`} value={d.category} onChange={(e) => setCategory(d, e.target.value as Category)} className="rounded-full border border-line bg-white px-3 py-1.5 text-sm font-semibold">
+                <select id={`cat-${d.id}`} value={d.category} onChange={(e) => setCategory(d, e.target.value as Category)} disabled={data.readOnly} className="rounded-full border border-line bg-white px-3 py-1.5 text-sm font-semibold disabled:opacity-60">
                   {Object.entries(CATEGORIES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                 </select>
-                {!d.mail_id && (
+                {!d.mail_id && !data.readOnly && (
                   <button onClick={() => remove(d)} aria-label={`Supprimer ${d.name}`} className="grid size-9 place-items-center rounded-full text-muted hover:bg-white hover:text-side-a"><Icon name="trash" className="size-5" /></button>
                 )}
               </li>

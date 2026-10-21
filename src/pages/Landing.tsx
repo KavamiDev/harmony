@@ -157,7 +157,7 @@ export default function Landing() {
           <nav aria-label="Pied de page" className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-muted">
             <a href="#fonctions" className="hover:text-ink">Fonctions</a>
             <a href="#tarif" className="hover:text-ink">Tarif</a>
-            <span>Confidentialité (bientôt)</span>
+            <Link to="/confidentialite" className="hover:text-ink">Confidentialité</Link>
           </nav>
         </div>
         <p className="pb-8 text-center text-xs text-muted">© 2026 Harmony</p>

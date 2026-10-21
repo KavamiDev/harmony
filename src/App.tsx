@@ -9,6 +9,8 @@ import Login from "./pages/Login";
 import Mails from "./pages/Mails";
 import Messages from "./pages/Messages";
 import Preview from "./pages/Preview";
+import Privacy from "./pages/Privacy";
+import Settings from "./pages/Settings";
 import Welcome from "./pages/Welcome";
 
 const router = createBrowserRouter([
@@ -22,6 +24,8 @@ const router = createBrowserRouter([
   { path: "/app/messages", element: <Messages /> },
   { path: "/app/mails", element: <Mails /> },
   { path: "/app/documents", element: <Documents /> },
+  { path: "/app/reglages", element: <Settings /> },
+  { path: "/confidentialite", element: <Privacy /> },
 ]);
 
 export default function App() {

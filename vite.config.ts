@@ -4,5 +4,5 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  test: { include: ["src/**/*.test.ts", "workers/**/*.test.ts"] },
+  test: { include: ["src/**/*.test.ts", "workers/**/*.test.ts", "supabase/functions/**/*.test.ts"] },
 });

@@ -6,3 +6,4 @@ dist/
 supabase/.temp/
 *.local
 .dev.vars
+supabase/functions/.env

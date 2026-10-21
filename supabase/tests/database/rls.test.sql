@@ -1,6 +1,6 @@
 -- RLS: families are isolated, messages are append-only, mails are read-only, invites work once.
 begin;
-select plan(17);
+select plan(19);
 
 -- Three parents: A1 and A2 will share family 1, C is alone in family 2.
 insert into auth.users (id, email) values
@@ -55,6 +55,14 @@ select throws_ok($$ insert into public.mails (family_id, child_id, message_id, f
 -- The invite is single use.
 select pg_temp.login('33333333-3333-3333-3333-333333333333');
 select throws_ok($$ select public.accept_invite('tok-family-1', 'Sam') $$, 'invite already used', 'used invite is refused');
+
+-- Trial over and nothing paid: read-only on the server too.
+reset role;
+update public.families set trial_ends_at = now() - interval '1 day', paid_until = null where id = current_setting('test.f1')::uuid;
+set local role authenticated;
+select pg_temp.login('11111111-1111-1111-1111-111111111111');
+select throws_ok($$ insert into public.messages (family_id, body) values (current_setting('test.f1')::uuid, 'après l''essai') $$, '42501', null, 'expired family cannot write');
+select is((select count(*) from public.messages)::int, 1, 'expired family still reads its messages');
 
 select * from finish();
 rollback;

@@ -1,10 +1,11 @@
 // Signed-in layout: header, page, and navigation (bottom bar on phones, top on desktop).
 import type { ReactNode } from "react";
-import { NavLink, Navigate } from "react-router";
+import { Link, NavLink, Navigate } from "react-router";
 import type { Side } from "../lib/custody";
 import { useSession, type FamilyData } from "../lib/session";
 import { supabase } from "../lib/supabase";
 import { Icon, Logo } from "./art";
+import PlanBanner from "./PlanBanner";
 import { SIDE_STYLE } from "./TodayCard";
 import { Loading } from "./ui";
 
@@ -34,13 +35,14 @@ export default function AppShell({ children }: { children: (data: FamilyData) =>
           {NAV.map((n) => <NavLink key={n.to} to={n.to} end className={link}><Icon name={n.icon} className="size-5" />{n.label}</NavLink>)}
         </nav>
         <div className="flex items-center gap-1">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-sm font-semibold shadow-sm">
-            <span className={`size-2.5 rounded-full ${SIDE_STYLE[data.me.side as Side].dot}`} />{data.me.display_name}
-          </span>
+          <Link to="/app/reglages" aria-label="Réglages" className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-sm font-semibold shadow-sm hover:bg-mint">
+            <span className={`size-2.5 rounded-full ${SIDE_STYLE[data.me.side as Side].dot}`} />{data.me.display_name}<Icon name="settings" className="size-4 text-muted" />
+          </Link>
           <button onClick={() => supabase.auth.signOut()} className="rounded-full px-3 py-1.5 text-sm font-semibold text-muted hover:bg-white hover:text-ink">Déconnexion</button>
         </div>
       </header>
 
+      <PlanBanner data={data} />
       {children(data)}
 
       <nav aria-label="Application" className="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-white/95 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur md:hidden">
