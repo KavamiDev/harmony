@@ -48,4 +48,16 @@ bun run mail:dev
 curl -X POST "http://127.0.0.1:8787/cdn-cgi/handler/email?from=school@example.org&to=lea.xxxx@harmony.fr" --data-binary @mail.eml
 ```
 
+### Notifications and calendar feed (Edge Functions)
+
+```bash
+bun run functions:dev   # notify (notification mails), calendar (iCal feed), stripe-webhook
+```
+
+`supabase/functions/.env` (gitignored) holds `NOTIFY_SECRET`, `APP_URL`, `MAIL_FROM` and, locally,
+`MAILPIT_URL=http://supabase_inbucket_harmony:8025`: notification mails then show up in
+Mailpit. In production set `RESEND_API_KEY` instead. The database finds the function through
+`private.config` (`notify_url`, `notify_secret`): after `supabase db reset`, insert the secret
+again so it matches `NOTIFY_SECRET`.
+
 Spec: `docs/SPEC.md` · Later: `docs/LATER.md`

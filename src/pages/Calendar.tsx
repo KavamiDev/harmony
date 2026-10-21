@@ -166,7 +166,8 @@ function EventForm({ day, data, onDone }: { day: string; data: FamilyData; onDon
     e.preventDefault();
     if (!allDay && end && end < time) return setError("L'heure de fin doit être après l'heure de début.");
     setBusy(true); setError("");
-    const starts = new Date(`${date}T${allDay ? "00:00" : time}`);
+    // All-day events sit at noon UTC: the same calendar day in every time zone from UTC-11 to UTC+11.
+    const starts = allDay ? new Date(`${date}T12:00:00Z`) : new Date(`${date}T${time}`);
     const { error } = await supabase.from("events").insert({
       family_id: data.family.id, child_id: data.child.id, title: title.trim(), all_day: allDay,
       starts_at: starts.toISOString(), ends_at: !allDay && end ? new Date(`${date}T${end}`).toISOString() : null,

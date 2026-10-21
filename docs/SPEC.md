@@ -23,6 +23,9 @@ tout ce qui concerne leur enfant.*
 | Documents | Catégories : école, administratif, activités, autre. **Pas de documents médicaux** en V1 (voir 7). |
 | Invitation | Un lien à partager (WhatsApp, SMS, mail). L'autre parent saisit son email, reçoit un code à 6 chiffres, il est dedans. Pas de mot de passe. |
 | Abonnement | 19 €/an par famille, deux parents inclus. 14 jours d'essai, sans carte. |
+| Notifications | Un mail court à chaque parent quand un mail arrive pour l'enfant, quand l'autre parent écrit (au plus un par demi-heure), quand un changement de garde attend sa réponse ou a reçu une réponse. Chaque type se coupe dans les réglages. |
+| Kit « donner l'adresse » | Un texte prêt à envoyer à l'école, au médecin, à une activité, à copier, partager ou ouvrir dans sa messagerie. La version médecin demande de ne pas envoyer de résultats ni d'ordonnances. |
+| Agenda | Lien privé par parent (iCal) pour voir la garde et les rendez-vous dans Google Agenda ou Calendrier d'Apple. Révocable. |
 
 Hors V1 : voir `docs/LATER.md`.
 
@@ -73,8 +76,12 @@ Supabase, région UE (Francfort)
    ├─ Auth : connexion par code mail (OTP), sans mot de passe
    ├─ Postgres : tables + RLS (un parent ne voit que sa famille)
    ├─ Storage : bucket privé `documents`, chemins `<family_id>/…`, URLs signées
-   ├─ Fonctions SQL : `create_family`, `invite_preview`, `accept_invite`
-   └─ Edge Function : `stripe-webhook`
+   ├─ Fonctions SQL : `create_family`, `invite_preview`, `accept_invite`, changements de garde, lien d'agenda
+   └─ Edge Functions : `stripe-webhook`, `notify` (envoi des mails), `calendar` (flux iCal)
+
+Notifications
+   insertion (mail, message, demande) ──trigger──▶ table `notifications` ──pg_net──▶ `notify`
+                                                      réservation atomique, puis Resend (prod) ou Mailpit (local)
 
 Mail entrant
    école ──▶ MX Cloudflare (routage de mails) ──▶ Worker `mail-in`

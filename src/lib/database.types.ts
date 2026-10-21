@@ -9,6 +9,35 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      calendar_feeds: {
+        Row: {
+          created_at: string
+          family_id: string
+          token_hash: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          family_id: string
+          token_hash: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          family_id?: string
+          token_hash?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_feeds_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       children: {
         Row: {
           created_at: string
@@ -400,6 +429,9 @@ export type Database = {
           display_name: string
           family_id: string
           joined_at: string
+          notify_change: boolean
+          notify_mail: boolean
+          notify_message: boolean
           side: string
           user_id: string
         }
@@ -407,6 +439,9 @@ export type Database = {
           display_name: string
           family_id: string
           joined_at?: string
+          notify_change?: boolean
+          notify_mail?: boolean
+          notify_message?: boolean
           side: string
           user_id: string
         }
@@ -414,6 +449,9 @@ export type Database = {
           display_name?: string
           family_id?: string
           joined_at?: string
+          notify_change?: boolean
+          notify_mail?: boolean
+          notify_message?: boolean
           side?: string
           user_id?: string
         }
@@ -459,6 +497,53 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          attempts: number
+          claimed_at: string | null
+          created_at: string
+          family_id: string
+          id: string
+          kind: string
+          recipient: string
+          ref_id: string
+          sent_at: string | null
+          skipped: string | null
+        }
+        Insert: {
+          attempts?: number
+          claimed_at?: string | null
+          created_at?: string
+          family_id: string
+          id?: string
+          kind: string
+          recipient: string
+          ref_id: string
+          sent_at?: string | null
+          skipped?: string | null
+        }
+        Update: {
+          attempts?: number
+          claimed_at?: string | null
+          created_at?: string
+          family_id?: string
+          id?: string
+          kind?: string
+          recipient?: string
+          ref_id?: string
+          sent_at?: string | null
+          skipped?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -478,6 +563,27 @@ export type Database = {
       }
       can_write: { Args: { f: string }; Returns: boolean }
       cancel_change: { Args: { change: string }; Returns: undefined }
+      claim_notifications: {
+        Args: { max: number }
+        Returns: {
+          attempts: number
+          claimed_at: string | null
+          created_at: string
+          family_id: string
+          id: string
+          kind: string
+          recipient: string
+          ref_id: string
+          sent_at: string | null
+          skipped: string | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "notifications"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       create_family: {
         Args: {
           anchor: string
@@ -489,6 +595,7 @@ export type Database = {
         }
         Returns: string
       }
+      delete_calendar_feed: { Args: never; Returns: undefined }
       invite_preview: {
         Args: { token: string }
         Returns: {
@@ -498,6 +605,7 @@ export type Database = {
         }[]
       }
       is_member: { Args: { f: string }; Returns: boolean }
+      new_calendar_feed: { Args: never; Returns: string }
       path_family: { Args: { p: string }; Returns: string }
       propose_cycle: {
         Args: {

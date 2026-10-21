@@ -8,9 +8,10 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "isolatedModules": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "workers", "vite.config.ts", "supabase/functions/**/logic*.ts"]
+  "include": ["src", "workers", "vite.config.ts", "supabase/functions/**/logic*.ts", "supabase/functions/_shared", "supabase/functions/calendar/ical*.ts"]
 }

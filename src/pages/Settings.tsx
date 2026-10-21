@@ -1,6 +1,9 @@
 // Subscription, the child's address, the family, privacy and account.
 import { Link } from "react-router";
+import AddressKit from "../components/AddressKit";
 import AppShell from "../components/AppShell";
+import CalendarFeed from "../components/CalendarFeed";
+import NotifySettings from "../components/NotifySettings";
 import { Icon } from "../components/art";
 import { PayButton } from "../components/PlanBanner";
 import { SIDE_STYLE } from "../components/TodayCard";
@@ -39,7 +42,12 @@ function SettingsContent({ data }: { data: FamilyData }) {
         <h2 id="address" className="text-lg font-bold">Adresse de {child.first_name}</h2>
         <p className="mt-2 font-bold">{child.mail_local}@{MAIL_DOMAIN}</p>
         <p className="mt-1 text-sm text-muted">Les pièces jointes autorisées (PDF, images, Word, Excel, texte, 10 Mo maximum) sont rangées dans Documents.</p>
+        <AddressKit data={data} />
       </section>
+
+      <NotifySettings data={data} />
+
+      <CalendarFeed child={child.first_name} />
 
       <section aria-labelledby="family" className="card p-5 sm:p-6">
         <h2 id="family" className="text-lg font-bold">Famille</h2>

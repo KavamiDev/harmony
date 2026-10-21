@@ -406,3 +406,11 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 [functions.stripe-webhook]
 # Stripe sends no Supabase JWT: the Stripe-Signature header is verified instead.
 verify_jwt = false
+
+[functions.notify]
+# Called by database triggers with the x-notify-secret header, not by users.
+verify_jwt = false
+
+[functions.calendar]
+# Calendar apps cannot send a JWT: access is the secret token in the URL.
+verify_jwt = false

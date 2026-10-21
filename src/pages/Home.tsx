@@ -1,6 +1,7 @@
 // The parent home screen, from real data.
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import AddressKit from "../components/AddressKit";
 import AppShell, { sideNames } from "../components/AppShell";
 import ChangeRequests from "../components/ChangeRequests";
 import { Icon, Meadow } from "../components/art";
@@ -51,6 +52,7 @@ function HomeContent({ data }: { data: FamilyData }) {
             <Link to="/app/mails" className="text-sm font-bold text-brand hover:underline">Tout voir</Link>
           </div>
           <AddressLine address={address} />
+          <AddressKit data={data} />
           {mails.length === 0 ? (
             <p className="mt-4 rounded-2xl bg-bg px-4 py-3 text-sm text-muted">Aucun mail pour l'instant. Donnez cette adresse à l'école, au médecin, au club : leurs mails arriveront ici, chez vous deux.</p>
           ) : (
