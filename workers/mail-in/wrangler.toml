@@ -4,5 +4,5 @@ compatibility_date = "2026-10-01"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-MAIL_DOMAIN = "harmony.fr"
+MAIL_DOMAIN = "harmony.fr" # set to the real domain before `wrangler deploy`
 # SUPABASE_URL and SUPABASE_SECRET_KEY: `wrangler secret put` in production, .dev.vars locally.

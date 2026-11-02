@@ -7,7 +7,9 @@ Le cœur : **une adresse mail pour l'enfant** (`lea.k7m2@<domaine>`). L'école, 
 le club écrivent à cette adresse, et **les deux parents reçoivent tout**, au même endroit.
 Autour : un calendrier de garde, une messagerie entre parents et un espace documents.
 
-Semaine 01 du défi 52.log (du lundi 19 au dimanche 25 octobre 2026).
+Mois 01 du défi 12.log (novembre 2026, à livrer avant le 30). Le défi est passé d'un
+produit par semaine à un produit par mois le 29 octobre : la V1 a été construite du 19 au
+21 octobre, novembre sert à la mise en ligne, à la bêta et au lancement.
 
 Hypothèse : *des parents séparés paieront 19 €/an pour qu'une adresse partagée reçoive
 tout ce qui concerne leur enfant.*
@@ -144,15 +146,14 @@ Interface en français, mobile d'abord. Ton calme et neutre : rien qui oppose le
 
 ## 10. Planning
 
-| Jour | Objectif | Commit |
+| Quand | Objectif | Commit |
 |---|---|---|
-| Lun 19 | Spec, scaffold, logique pure testée, schéma + RLS | `init(#01)` ✅ |
-| Mar 20 | Connexion par code, création de famille, invitation de bout en bout | `progress` |
-| Mer 21 | Calendrier de garde + rendez-vous, messagerie | `progress` |
-| Jeu 22 | Worker mail entrant, documents | `cut` |
-| Ven 23 | Abonnement Stripe, landing, page confidentialité | |
-| Sam 24 | Domaine, déploiement Cloudflare + Supabase prod, tests réels | |
-| Dim 25 | Mise en ligne | `ship(#01)` |
+| 19–21 oct. | Spec, V1 complète : connexion, famille, invitation, calendrier, changements validés, messages, mail de l'enfant, documents, notifications, abonnement | `init(#01)`, `progress`, `cut` ✅ |
+| 2–8 nov. | Domaine, Cloudflare, Supabase prod, Resend, déploiement (voir `docs/DEPLOY.md`) | `progress` |
+| 9–15 nov. | Stripe test puis live, mentions légales et CGV, recette sur vrais téléphones | `progress` |
+| 16–22 nov. | Bêta avec 5 à 10 familles (entourage, groupes de parents), corrections | `progress` |
+| 23–30 nov. | Lancement public, avant le 30 | `ship(#01)` |
+| fin décembre | Chiffres à 30 jours, bons ou mauvais | `verdict(#01)` |
 
 ## 11. Terminé quand
 
