@@ -1,0 +1,53 @@
+# Usine de dev · Chef de projet
+# Triggers: label `factory` on an issue, or a `/plan [remarques]` comment on an issue.
+# Only the repo owner can start it (public repo: nobody else spends your Claude quota).
+name: factory-plan
+
+on:
+  issues:
+    types: [opened, labeled]
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: factory-plan-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    if: >-
+      github.event.sender.login == github.repository_owner && (
+        (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'factory') &&
+          (github.event.action == 'opened' || github.event.label.name == 'factory')) ||
+        (github.event_name == 'issue_comment' && !github.event.issue.pull_request &&
+          startsWith(github.event.comment.body, '/plan'))
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      FACTORY_MODEL: ${{ vars.FACTORY_MODEL }}
+      FACTORY_MODEL_PLANNER: ${{ vars.FACTORY_MODEL_PLANNER }}
+      ISSUE: ${{ github.event.issue.number }}
+      COMMENT_ID: ${{ github.event.comment.id }}
+      COMMENT_BODY: ${{ github.event.comment.body }}
+    steps:
+      - name: Accusé de réception
+        if: github.event_name == 'issue_comment'
+        run: gh api "repos/${{ github.repository }}/issues/comments/$COMMENT_ID/reactions" -f content=eyes >/dev/null
+
+      - uses: actions/checkout@v7
+
+      - name: Installer Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Chef de projet
+        run: |
+          [ -n "$ANTHROPIC_API_KEY" ] || unset ANTHROPIC_API_KEY
+          printf '%s' "${COMMENT_BODY#/plan}" > /tmp/feedback.md
+          bash .factory/plan.sh "$ISSUE" /tmp/feedback.md

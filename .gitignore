@@ -7,3 +7,4 @@ supabase/.temp/
 *.local
 .dev.vars
 supabase/functions/.env
+.factory-out/

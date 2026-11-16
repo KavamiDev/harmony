@@ -1,0 +1,25 @@
+name: 🏭 Tâche pour l'usine
+description: Une demande que l'équipe d'agents va planifier, coder et relire
+labels: [factory]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Quoi
+      description: Ce que tu veux, en une phrase ou plus. Comme à un dev de ton équipe.
+      placeholder: Sur l'accueil, afficher le prochain changement de garde avec le prénom du parent.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Pourquoi
+      description: Le problème réel derrière la demande. Aide le chef de projet à bien trancher.
+  - type: textarea
+    id: done
+    attributes:
+      label: Terminé quand
+      description: Optionnel. Ce que tu vérifieras en relisant la PR.
+      placeholder: |
+        - visible sur mobile sans scroller
+        - rien ne s'affiche s'il n'y a pas de changement prévu
