@@ -60,4 +60,4 @@ Mailpit. In production set `RESEND_API_KEY` instead. The database finds the func
 `private.config` (`notify_url`, `notify_secret`): after `supabase db reset`, insert the secret
 again so it matches `NOTIFY_SECRET`.
 
-Spec: `docs/SPEC.md` · Later: `docs/LATER.md`
+Spec: `docs/SPEC.md` · Later: `docs/LATER.md` · Usine de dev (agents): `.factory/README.md`

@@ -1,0 +1,39 @@
+# CI: the safety net under the factory (and under Kevin).
+# Runs on every PR, every push to main, and when the factory dispatches it on its branch.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: check · test · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: cp .env.example .env.local
+      - run: bun run check
+      - run: bun run test
+      - run: bun run build
+
+  db:
+    name: RLS (pgTAP)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase start -x studio,imgproxy,logflare,vector,edge-runtime,supavisor
+      - run: supabase test db

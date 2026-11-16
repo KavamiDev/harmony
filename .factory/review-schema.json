@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "verdict": { "type": "string", "enum": ["approve", "changes"] },
+    "summary": { "type": "string", "description": "2 à 4 phrases : ce que fait le changement et ton avis global" },
+    "blocking": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "where": { "type": "string" },
+          "problem": { "type": "string" },
+          "fix": { "type": "string" }
+        },
+        "required": ["where", "problem", "fix"]
+      }
+    },
+    "suggestions": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["verdict", "summary", "blocking", "suggestions"]
+}

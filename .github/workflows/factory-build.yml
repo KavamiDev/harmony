@@ -1,0 +1,81 @@
+# Usine de dev · Dev + Reviewer
+# Triggers:
+#   `/go` comment on an issue that has a plan  -> codes it, reviews it, opens a PR
+#   `/fix <remarques>` comment on a factory PR -> applies Kevin's remarks, re-reviews
+#   manual run (Actions tab) with an issue number
+name: factory-build
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: Numéro de l'issue à construire
+        required: true
+
+concurrency:
+  group: factory-build-${{ github.event.issue.number || inputs.issue }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: >-
+      github.event_name == 'workflow_dispatch' || (
+        github.event.sender.login == github.repository_owner && (
+          (!github.event.issue.pull_request && startsWith(github.event.comment.body, '/go')) ||
+          (github.event.issue.pull_request && startsWith(github.event.comment.body, '/fix'))
+        )
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      FACTORY_MODEL: ${{ vars.FACTORY_MODEL }}
+      FACTORY_MODEL_DEV: ${{ vars.FACTORY_MODEL_DEV }}
+      FACTORY_MODEL_REVIEWER: ${{ vars.FACTORY_MODEL_REVIEWER }}
+      NUMBER: ${{ github.event.issue.number || inputs.issue }}
+      IS_PR: ${{ github.event.issue.pull_request && 'true' || 'false' }}
+      COMMENT_ID: ${{ github.event.comment.id }}
+      COMMENT_BODY: ${{ github.event.comment.body }}
+    steps:
+      - name: Accusé de réception
+        if: github.event_name == 'issue_comment'
+        run: gh api "repos/${{ github.repository }}/issues/comments/$COMMENT_ID/reactions" -f content=rocket >/dev/null
+
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Installer les dépendances et Claude Code
+        run: |
+          bun install --frozen-lockfile
+          npm install -g @anthropic-ai/claude-code
+
+      - name: Dev + Reviewer
+        run: |
+          [ -n "$ANTHROPIC_API_KEY" ] || unset ANTHROPIC_API_KEY
+          if [ "$IS_PR" = "true" ]; then
+            printf '%s' "${COMMENT_BODY#/fix}" > /tmp/feedback.md
+            bash .factory/build.sh fix "$NUMBER" /tmp/feedback.md
+          else
+            bash .factory/build.sh issue "$NUMBER"
+          fi
+
+      - name: Garder les traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: factory-${{ env.NUMBER }}-${{ github.run_attempt }}
+          path: .factory-out/
+          retention-days: 14
+          include-hidden-files: true
